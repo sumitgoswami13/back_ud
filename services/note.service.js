@@ -75,8 +75,22 @@ export async function addDocumentNote({
     // Determine who should receive the email
     const emailRecipients = [];
     
-    if (!isInternal) {
-      // If not internal note, notify document owner (if different from note author)
+    // Get all admin users
+    const admins = await User.find({ type: 'admin' }).select('email firstName').lean();
+    
+    // If user creates a note, notify all admins
+    if (user.type !== 'admin') {
+      admins.forEach(admin => {
+        emailRecipients.push({
+          email: admin.email,
+          firstName: admin.firstName,
+          role: 'admin'
+        });
+      });
+    }
+    
+    // If admin creates a public note, notify document owner (if different from note author)
+    if (user.type === 'admin' && !isInternal) {
       if (documentOwner && documentOwner._id.toString() !== userId.toString()) {
         emailRecipients.push({
           email: documentOwner.email,
@@ -88,7 +102,6 @@ export async function addDocumentNote({
 
     // Always notify admins for high/urgent priority notes
     if (priority === 'high' || priority === 'urgent') {
-      const admins = await User.find({ type: 'admin' }).select('email firstName').lean();
       admins.forEach(admin => {
         if (!emailRecipients.find(r => r.email === admin.email)) {
           emailRecipients.push({

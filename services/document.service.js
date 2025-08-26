@@ -140,10 +140,30 @@ export async function attachSignedDocumentLinkFromFile({ documentId, file, req }
     documentId,
     { $set: { signedDocumentLink: signedLink, documentStatus: "signed" } },
     { new: true }
-  ).lean();
+  );
 
   if (!doc) throw new Error("Document not found");
-  return doc;
+
+  // Get user details for email notification
+  try {
+    const user = await User.findById(doc.userId).lean();
+    const transaction = await Transaction.findById(doc.transactionId).lean();
+    
+    if (user && transaction) {
+      await sendDocumentStatusEmail({
+        email: user.email,
+        firstName: user.firstName,
+        documentType: doc.documentType,
+        status: "signed",
+        transactionId: transaction.transactionId
+      });
+    }
+  } catch (emailError) {
+    console.error('Failed to send signed document email:', emailError);
+    // Don't throw error - document update should still succeed
+  }
+
+  return doc.toObject();
 }
 
 export async function deleteDocument(documentId) {

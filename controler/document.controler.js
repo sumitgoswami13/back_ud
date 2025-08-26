@@ -108,8 +108,10 @@ export async function attachSignedLinkFileController(req, res) {
 
   try {
     const data = await attachSignedDocumentLinkFromFile({ documentId, file, req });
+    console.log('Signed document uploaded successfully, email should be sent');
     res.json({ success: true, data });
   } catch (err) {
+    console.error('Error uploading signed document:', err);
     try { await fs.unlink(diskPath(file)); } catch {}
     res.status(400).json({ success: false, message: err.message });
   }

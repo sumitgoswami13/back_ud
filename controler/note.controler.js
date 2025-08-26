@@ -35,6 +35,8 @@ export async function addDocumentNoteController(req, res) {
     const finalNoteType = userType === "admin" ? noteType : "user";
     const finalIsInternal = userType === "admin" ? isInternal : false;
 
+    console.log('Adding note:', { documentId, userId, userType, noteText, priority });
+
     const data = await addDocumentNote({
       documentId,
       userId,
@@ -46,8 +48,10 @@ export async function addDocumentNoteController(req, res) {
       req,
     });
 
+    console.log('Note added successfully, email should be sent');
     res.status(201).json({ success: true, data });
   } catch (err) {
+    console.error('Error adding note:', err);
     const code = err.message.includes("not found") ? 404 : 400;
     res.status(code).json({ success: false, message: err.message });
   }
