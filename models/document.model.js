@@ -25,7 +25,7 @@ const documentSchema = new mongoose.Schema(
     },
     documentStatus: {
       type: String,
-      enum: ["pending", "under_review", "approved", "rejected", "signed"],
+      enum: ["pending", "processing", "signed", "completed", "rejected", "failed"],
       default: "pending",
     },
     signedDocumentLink: {

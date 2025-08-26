@@ -97,7 +97,7 @@ export async function getDocumentById(documentId) {
 
 export async function updateDocumentStatus({ documentId, documentStatus }) {
   if (!mongoose.isValidObjectId(documentId)) throw new Error("Invalid documentId");
-  const allowed = ["pending", "under_review", "approved", "rejected", "signed"];
+  const allowed = ["pending", "processing", "signed", "completed", "rejected", "failed"];
   if (!allowed.includes(documentStatus)) throw new Error("Invalid status");
 
   const doc = await Document.findByIdAndUpdate(
