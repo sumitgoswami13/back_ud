@@ -2,6 +2,12 @@ import crypto from "crypto";
 import User from "../models/user.model.js";
 import EmailOtpVerification from "../models/otp.model.js";
 import { generateAccessToken, generateRefreshToken } from "../utlis/tokenService.js";
+import { 
+  sendWelcomeEmail, 
+  sendForgotPasswordOTP, 
+  sendEmailVerificationOTP,
+  sendPasswordResetSuccessEmail 
+} from "./email.service.js";
 
 function generateTempPassword(length = 8) {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
@@ -68,6 +74,20 @@ export async function register(payload) {
 
   user.type="user";
   await user.save();
+
+  // Send welcome email with temporary password
+  try {
+    await sendWelcomeEmail({
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      tempPassword
+    });
+  } catch (emailError) {
+    console.error('Failed to send welcome email:', emailError);
+    // Don't throw error - registration should still succeed even if email fails
+  }
+
   const payloadToken = { id: user._id.toString(), email: user.email };
   const accessToken = generateAccessToken(payloadToken);
   const refreshToken = generateRefreshToken(payloadToken);
@@ -186,6 +206,19 @@ export async function startForgotPassword({ email }) {
     expiresAt,
     used: false,
   });
+
+  // Send forgot password OTP email
+  try {
+    await sendForgotPasswordOTP({
+      email: user.email,
+      otp,
+      firstName: user.firstName
+    });
+  } catch (emailError) {
+    console.error('Failed to send forgot password OTP email:', emailError);
+    // Don't throw error - OTP generation should still succeed
+  }
+
   return { verificationId, otp };
 }
 
@@ -214,6 +247,18 @@ export async function resetPassword({ email, newPassword }) {
   if (!rec.used) throw new Error("OTP not verified");
   user.password = newPassword;
   await user.save();
+
+  // Send password reset success email
+  try {
+    await sendPasswordResetSuccessEmail({
+      email: user.email,
+      firstName: user.firstName
+    });
+  } catch (emailError) {
+    console.error('Failed to send password reset success email:', emailError);
+    // Don't throw error - password reset should still succeed
+  }
+
   return { email: user.email };
 }
 
@@ -239,6 +284,19 @@ export async function sendEmailOtp({ email }) {
     expiresAt,
     used: false,
   });
+
+  // Send email verification OTP
+  try {
+    await sendEmailVerificationOTP({
+      email,
+      otp,
+      firstName: 'User' // We don't have firstName for standalone email verification
+    });
+  } catch (emailError) {
+    console.error('Failed to send email verification OTP:', emailError);
+    // Don't throw error - OTP generation should still succeed
+  }
+
   return { verificationId, otp };
 }
 function escapeRegex(str = "") {

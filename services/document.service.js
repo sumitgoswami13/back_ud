@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Document from "../models/document.model.js";
 import Transaction from "../models/transaction.model.js";
 import User from "../models/user.model.js";
+import { sendDocumentStatusEmail } from "./email.service.js";
 
 function buildFullUrl(req, filePath) {
   const baseUrl = `${req.protocol}://${req.get("host")}`;
@@ -103,10 +104,30 @@ export async function updateDocumentStatus({ documentId, documentStatus }) {
     documentId,
     { $set: { documentStatus } },
     { new: true }
-  ).lean();
+  );
 
   if (!doc) throw new Error("Document not found");
-  return doc;
+
+  // Get user details for email notification
+  try {
+    const user = await User.findById(doc.userId).lean();
+    const transaction = await Transaction.findById(doc.transactionId).lean();
+    
+    if (user && transaction) {
+      await sendDocumentStatusEmail({
+        email: user.email,
+        firstName: user.firstName,
+        documentType: doc.documentType,
+        status: documentStatus,
+        transactionId: transaction.transactionId
+      });
+    }
+  } catch (emailError) {
+    console.error('Failed to send document status email:', emailError);
+    // Don't throw error - status update should still succeed
+  }
+
+  return doc.toObject();
 }
 
 export async function attachSignedDocumentLinkFromFile({ documentId, file, req }) {

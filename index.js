@@ -6,6 +6,7 @@ import cors from "cors";
 import { fileURLToPath } from "url";
 
 import connectDB from "./config/db.js";
+import "./config/email.js"; // Initialize email configuration
 import authRoutes from "./routes/auth.routes.js";
 import transactionRoutes from "./routes/transaction.routes.js";
 import documentRoutes from "./routes/document.routes.js";
