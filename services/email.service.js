@@ -2,7 +2,7 @@
 import transporter from "../config/email.js";
 
 const FROM_EMAIL = process.env.EMAIL_FROM;
-const FROM_NAME = process.env.EMAIL_FROM_NAME || "Deco Platform";
+const FROM_NAME = process.env.EMAIL_FROM_NAME || "udin.in";
 
 /**
  * Send welcome email with temporary password
@@ -11,14 +11,14 @@ export async function sendWelcomeEmail({ email, firstName, lastName, tempPasswor
   const mailOptions = {
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to: email,
-    subject: "Welcome to Deco Platform - Your Account Details",
+    subject: "Welcome to udin.in - Your Account Details",
     html: `
       <!DOCTYPE html>
       <html>
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Welcome to Deco Platform</title>
+        <title>Welcome to udin.in</title>
         <style>
           body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
           .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -33,11 +33,11 @@ export async function sendWelcomeEmail({ email, firstName, lastName, tempPasswor
       <body>
         <div class="container">
           <div class="header">
-            <h1>Welcome to Deco Platform!</h1>
+            <h1>Welcome to udin.in!</h1>
           </div>
           <div class="content">
             <h2>Hello ${firstName} ${lastName},</h2>
-            <p>Thank you for registering with Deco Platform. Your account has been successfully created!</p>
+            <p>Thank you for registering with udin.in. Your account has been successfully created!</p>
             
             <div class="credentials">
               <h3>Your Login Credentials:</h3>
@@ -58,7 +58,7 @@ export async function sendWelcomeEmail({ email, firstName, lastName, tempPasswor
             
             <div class="footer">
               <p>If you didn't create this account, please ignore this email.</p>
-              <p>&copy; 2025 Deco Platform. All rights reserved.</p>
+              <p>&copy; 2025 udin.in. All rights reserved.</p>
             </div>
           </div>
         </div>
@@ -66,11 +66,11 @@ export async function sendWelcomeEmail({ email, firstName, lastName, tempPasswor
       </html>
     `,
     text: `
-      Welcome to Deco Platform!
+      Welcome to udin.in!
       
       Hello ${firstName} ${lastName},
       
-      Thank you for registering with Deco Platform. Your account has been successfully created!
+      Thank you for registering with udin.in. Your account has been successfully created!
       
       Your Login Credentials:
       Email: ${email}
@@ -80,7 +80,7 @@ export async function sendWelcomeEmail({ email, firstName, lastName, tempPasswor
       
       If you didn't create this account, please ignore this email.
       
-      © 2025 Deco Platform. All rights reserved.
+      © 2025 udin.in. All rights reserved.
     `
   };
 
@@ -101,7 +101,7 @@ export async function sendForgotPasswordOTP({ email, otp, firstName }) {
   const mailOptions = {
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to: email,
-    subject: "Password Reset OTP - Deco Platform",
+    subject: "Password Reset OTP - udin.in",
     html: `
       <!DOCTYPE html>
       <html>
@@ -127,7 +127,7 @@ export async function sendForgotPasswordOTP({ email, otp, firstName }) {
           </div>
           <div class="content">
             <h2>Hello ${firstName || 'User'},</h2>
-            <p>We received a request to reset your password for your Deco Platform account.</p>
+            <p>We received a request to reset your password for your udin.in account.</p>
             
             <div class="otp-box">
               <h3>Your OTP Code:</h3>
@@ -146,7 +146,7 @@ export async function sendForgotPasswordOTP({ email, otp, firstName }) {
             
             <div class="footer">
               <p>If you didn't request a password reset, please ignore this email.</p>
-              <p>&copy; 2025 Deco Platform. All rights reserved.</p>
+              <p>&copy; 2025 udin.in. All rights reserved.</p>
             </div>
           </div>
         </div>
@@ -154,11 +154,11 @@ export async function sendForgotPasswordOTP({ email, otp, firstName }) {
       </html>
     `,
     text: `
-      Password Reset Request - Deco Platform
+      Password Reset Request - udin.in
       
       Hello ${firstName || 'User'},
       
-      We received a request to reset your password for your Deco Platform account.
+      We received a request to reset your password for your udin.in account.
       
       Your OTP Code: ${otp}
       
@@ -169,7 +169,7 @@ export async function sendForgotPasswordOTP({ email, otp, firstName }) {
       - Our team will never ask for your OTP
       - If you didn't request this, please ignore this email
       
-      © 2025 Deco Platform. All rights reserved.
+      © 2025 udin.in. All rights reserved.
     `
   };
 
@@ -190,7 +190,7 @@ export async function sendEmailVerificationOTP({ email, otp, firstName }) {
   const mailOptions = {
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to: email,
-    subject: "Email Verification OTP - Deco Platform",
+    subject: "Email Verification OTP - udin.in",
     html: `
       <!DOCTYPE html>
       <html>
@@ -227,7 +227,7 @@ export async function sendEmailVerificationOTP({ email, otp, firstName }) {
             
             <div class="footer">
               <p>If you didn't create this account, please ignore this email.</p>
-              <p>&copy; 2025 Deco Platform. All rights reserved.</p>
+              <p>&copy; 2025 udin.in. All rights reserved.</p>
             </div>
           </div>
         </div>
@@ -235,7 +235,7 @@ export async function sendEmailVerificationOTP({ email, otp, firstName }) {
       </html>
     `,
     text: `
-      Email Verification - Deco Platform
+      Email Verification - udin.in
       
       Hello ${firstName || 'User'},
       
@@ -249,7 +249,7 @@ export async function sendEmailVerificationOTP({ email, otp, firstName }) {
       
       If you didn't create this account, please ignore this email.
       
-      © 2025 Deco Platform. All rights reserved.
+      © 2025 udin.in. All rights reserved.
     `
   };
 
@@ -269,10 +269,11 @@ export async function sendEmailVerificationOTP({ email, otp, firstName }) {
 export async function sendDocumentStatusEmail({ email, firstName, documentType, status, transactionId }) {
   const statusMessages = {
     pending: { title: "Document Received", color: "#6b7280", icon: "📄" },
-    under_review: { title: "Document Under Review", color: "#f59e0b", icon: "🔍" },
-    approved: { title: "Document Approved", color: "#059669", icon: "✅" },
+    processing: { title: "Document Processing", color: "#f59e0b", icon: "🔄" },
+    signed: { title: "Document Signed", color: "#7c3aed", icon: "✍️" },
+    completed: { title: "Document Completed", color: "#059669", icon: "✅" },
     rejected: { title: "Document Rejected", color: "#dc2626", icon: "❌" },
-    signed: { title: "Document Signed", color: "#7c3aed", icon: "✍️" }
+    failed: { title: "Document Failed", color: "#dc2626", icon: "⚠️" }
   };
 
   const statusInfo = statusMessages[status] || statusMessages.pending;
@@ -280,7 +281,7 @@ export async function sendDocumentStatusEmail({ email, firstName, documentType, 
   const mailOptions = {
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to: email,
-    subject: `${statusInfo.title} - ${documentType} | Deco Platform`,
+    subject: `${statusInfo.title} - ${documentType} | udin.in`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -317,15 +318,21 @@ export async function sendDocumentStatusEmail({ email, firstName, documentType, 
               </div>
             </div>
 
-            ${status === 'approved' ? `
+            ${status === 'completed' ? `
               <div style="background: #f0fdf4; border: 1px solid #059669; padding: 15px; border-radius: 6px; margin: 20px 0;">
-                <p><strong>🎉 Great news!</strong> Your document has been approved and is ready for the next step in the process.</p>
+                <p><strong>🎉 Great news!</strong> Your document has been completed successfully!</p>
               </div>
             ` : ''}
 
             ${status === 'rejected' ? `
               <div style="background: #fef2f2; border: 1px solid #dc2626; padding: 15px; border-radius: 6px; margin: 20px 0;">
                 <p><strong>📋 Action Required:</strong> Your document needs attention. Please review and resubmit with the necessary corrections.</p>
+              </div>
+            ` : ''}
+
+            ${status === 'failed' ? `
+              <div style="background: #fef2f2; border: 1px solid #dc2626; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <p><strong>❌ Processing Failed:</strong> There was an issue processing your document. Please contact our support team for assistance.</p>
               </div>
             ` : ''}
 
@@ -339,7 +346,7 @@ export async function sendDocumentStatusEmail({ email, firstName, documentType, 
             
             <div class="footer">
               <p>If you have any questions, please don't hesitate to contact our support team.</p>
-              <p>&copy; 2025 Deco Platform. All rights reserved.</p>
+              <p>&copy; 2025 udin.in. All rights reserved.</p>
             </div>
           </div>
         </div>
@@ -347,7 +354,7 @@ export async function sendDocumentStatusEmail({ email, firstName, documentType, 
       </html>
     `,
     text: `
-      Document Status Update - Deco Platform
+      Document Status Update - udin.in
       
       Hello ${firstName || 'User'},
       
@@ -359,15 +366,16 @@ export async function sendDocumentStatusEmail({ email, firstName, documentType, 
       - New Status: ${status.toUpperCase()}
       - Updated: ${new Date().toLocaleString()}
       
-      ${status === 'approved' ? 'Great news! Your document has been approved and is ready for the next step.' : ''}
+      ${status === 'completed' ? 'Great news! Your document has been completed successfully!' : ''}
       ${status === 'rejected' ? 'Action Required: Your document needs attention. Please review and resubmit with corrections.' : ''}
+      ${status === 'failed' ? 'Processing Failed: There was an issue processing your document. Please contact support.' : ''}
       ${status === 'signed' ? 'Complete! Your document has been successfully signed and processed.' : ''}
       
       You can log in to your account to view more details.
       
       If you have any questions, please contact our support team.
       
-      © 2025 Deco Platform. All rights reserved.
+      © 2025 udin.in. All rights reserved.
     `
   };
 
@@ -388,7 +396,7 @@ export async function sendPasswordResetSuccessEmail({ email, firstName }) {
   const mailOptions = {
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to: email,
-    subject: "Password Reset Successful - Deco Platform",
+    subject: "Password Reset Successful - udin.in",
     html: `
       <!DOCTYPE html>
       <html>
@@ -422,7 +430,7 @@ export async function sendPasswordResetSuccessEmail({ email, firstName }) {
             
             <div class="footer">
               <p>For security reasons, we recommend using a strong, unique password.</p>
-              <p>&copy; 2025 Deco Platform. All rights reserved.</p>
+              <p>&copy; 2025 udin.in. All rights reserved.</p>
             </div>
           </div>
         </div>
@@ -430,7 +438,7 @@ export async function sendPasswordResetSuccessEmail({ email, firstName }) {
       </html>
     `,
     text: `
-      Password Reset Successful - Deco Platform
+      Password Reset Successful - udin.in
       
       Hello ${firstName || 'User'},
       
@@ -441,7 +449,7 @@ export async function sendPasswordResetSuccessEmail({ email, firstName }) {
       
       For security reasons, we recommend using a strong, unique password.
       
-      © 2025 Deco Platform. All rights reserved.
+      © 2025 udin.in. All rights reserved.
     `
   };
 
@@ -486,7 +494,7 @@ export async function sendDocumentNoteEmail({
   const currentPriority = priorityInfo[priority] || priorityInfo.medium;
   const currentType = typeInfo[noteType] || typeInfo.user;
 
-  const subject = `${currentPriority.icon} New ${currentType.label} - ${documentType} | Deco Platform`;
+  const subject = `${currentPriority.icon} New ${currentType.label} - ${documentType} | udin.in`;
 
   const mailOptions = {
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
@@ -569,7 +577,7 @@ export async function sendDocumentNoteEmail({
             
             <div class="footer">
               <p>This notification was sent because you are ${recipientRole === 'admin' ? 'an administrator' : 'the document owner'}.</p>
-              <p>&copy; 2025 Deco Platform. All rights reserved.</p>
+              <p>&copy; 2025 udin.in. All rights reserved.</p>
             </div>
           </div>
         </div>
@@ -577,7 +585,7 @@ export async function sendDocumentNoteEmail({
       </html>
     `,
     text: `
-      New Document Note - Deco Platform
+      New Document Note - udin.in
       
       Hello ${firstName || 'User'},
       
@@ -601,7 +609,7 @@ export async function sendDocumentNoteEmail({
       
       This notification was sent because you are ${recipientRole === 'admin' ? 'an administrator' : 'the document owner'}.
       
-      © 2025 Deco Platform. All rights reserved.
+      © 2025 udin.in. All rights reserved.
     `
   };
 
