@@ -10,6 +10,7 @@ import "./config/email.js"; // Initialize email configuration
 import authRoutes from "./routes/auth.routes.js";
 import transactionRoutes from "./routes/transaction.routes.js";
 import documentRoutes from "./routes/document.routes.js";
+import noteRoutes from "./routes/note.routes.js";
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/documents", documentRoutes);
+app.use("/api/notes", noteRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,0 +1,230 @@
+{
+  "info": {
+    "name": "Document Notes API",
+    "_postman_id": "c8d4f7e3-1a2b-4c5d-8e9f-0123456789ab",
+    "description": "Postman collection for testing document notes functionality",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000" },
+    { "key": "documentId", "value": "64f0cc333333333333333333" },
+    { "key": "transactionId", "value": "64f0bb222222222222222222" },
+    { "key": "userId", "value": "64f0aa111111111111111111" },
+    { "key": "noteId", "value": "64f0dd444444444444444444" }
+  ],
+  "item": [
+    {
+      "name": "Document Notes",
+      "item": [
+        {
+          "name": "Add Note to Document (User)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"userType\": \"user\",\n  \"noteText\": \"I have a question about this document. Could you please review the signature section?\",\n  \"priority\": \"medium\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/document/{{documentId}}",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", "document", "{{documentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Add Note to Document (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"64f0aa111111111111111112\",\n  \"userType\": \"admin\",\n  \"noteText\": \"Document has been reviewed. Please update the address field and resubmit.\",\n  \"noteType\": \"admin\",\n  \"priority\": \"high\",\n  \"isInternal\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/document/{{documentId}}",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", "document", "{{documentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Add Internal Admin Note",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"64f0aa111111111111111112\",\n  \"userType\": \"admin\",\n  \"noteText\": \"Internal note: This user has submitted similar documents before. Check for duplicates.\",\n  \"noteType\": \"admin\",\n  \"priority\": \"medium\",\n  \"isInternal\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/document/{{documentId}}",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", "document", "{{documentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Add Urgent Note",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"userType\": \"user\",\n  \"noteText\": \"URGENT: I need this document processed immediately for a court hearing tomorrow!\",\n  \"priority\": \"urgent\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/document/{{documentId}}",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", "document", "{{documentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Document Notes (User View)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/document/{{documentId}}?userId={{userId}}&userType=user",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", "document", "{{documentId}}"],
+              "query": [
+                { "key": "userId", "value": "{{userId}}" },
+                { "key": "userType", "value": "user" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Document Notes (Admin View)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/document/{{documentId}}?userId=64f0aa111111111111111112&userType=admin",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", "document", "{{documentId}}"],
+              "query": [
+                { "key": "userId", "value": "64f0aa111111111111111112" },
+                { "key": "userType", "value": "admin" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Document Note Statistics",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/document/{{documentId}}/stats",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", "document", "{{documentId}}", "stats"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transaction Notes",
+      "item": [
+        {
+          "name": "Get All Notes for Transaction (User)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/transaction/{{transactionId}}?userId={{userId}}&userType=user",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", "transaction", "{{transactionId}}"],
+              "query": [
+                { "key": "userId", "value": "{{userId}}" },
+                { "key": "userType", "value": "user" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Notes for Transaction (Admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/transaction/{{transactionId}}?userId=64f0aa111111111111111112&userType=admin",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", "transaction", "{{transactionId}}"],
+              "query": [
+                { "key": "userId", "value": "64f0aa111111111111111112" },
+                { "key": "userType", "value": "admin" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Notes",
+      "item": [
+        {
+          "name": "Get Notes by User",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/user/{{userId}}?userType=user",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", "user", "{{userId}}"],
+              "query": [
+                { "key": "userType", "value": "user" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Note Management",
+      "item": [
+        {
+          "name": "Update Note",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"userType\": \"user\",\n  \"noteText\": \"Updated: I have a question about this document. Could you please review the signature section? Also, please check the date format.\",\n  \"priority\": \"high\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/{{noteId}}",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", "{{noteId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Note",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"userType\": \"user\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/{{noteId}}",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", "{{noteId}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

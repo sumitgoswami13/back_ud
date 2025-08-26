@@ -454,3 +454,163 @@ export async function sendPasswordResetSuccessEmail({ email, firstName }) {
     throw new Error('Failed to send password reset success email');
   }
 }
+
+/**
+ * Send document note notification email
+ */
+export async function sendDocumentNoteEmail({ 
+  email, 
+  firstName, 
+  documentType, 
+  transactionId, 
+  noteText, 
+  noteAuthor, 
+  noteType, 
+  priority, 
+  isInternal,
+  recipientRole 
+}) {
+  const priorityInfo = {
+    low: { color: "#6b7280", icon: "📝", label: "Low Priority" },
+    medium: { color: "#f59e0b", icon: "📋", label: "Medium Priority" },
+    high: { color: "#dc2626", icon: "⚠️", label: "High Priority" },
+    urgent: { color: "#7c2d12", icon: "🚨", label: "URGENT" }
+  };
+
+  const typeInfo = {
+    user: { label: "User Note", color: "#059669" },
+    admin: { label: "Admin Note", color: "#7c3aed" },
+    system: { label: "System Note", color: "#6b7280" }
+  };
+
+  const currentPriority = priorityInfo[priority] || priorityInfo.medium;
+  const currentType = typeInfo[noteType] || typeInfo.user;
+
+  const subject = `${currentPriority.icon} New ${currentType.label} - ${documentType} | Deco Platform`;
+
+  const mailOptions = {
+    from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
+    to: email,
+    subject,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>New Document Note</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: ${currentType.color}; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+          .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
+          .note-box { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid ${currentType.color}; }
+          .priority-badge { 
+            display: inline-block; 
+            background: ${currentPriority.color}; 
+            color: white; 
+            padding: 4px 12px; 
+            border-radius: 12px; 
+            font-size: 12px; 
+            font-weight: bold; 
+            margin: 5px 0;
+          }
+          .footer { text-align: center; margin-top: 30px; color: #6b7280; font-size: 14px; }
+          .details { background: #f3f4f6; padding: 15px; border-radius: 6px; margin: 15px 0; }
+          .note-content { 
+            background: #ffffff; 
+            border: 1px solid #e5e7eb; 
+            padding: 15px; 
+            border-radius: 6px; 
+            margin: 15px 0;
+            font-style: italic;
+          }
+          ${isInternal ? '.internal-notice { background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 6px; margin: 20px 0; }' : ''}
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>${currentPriority.icon} New Document Note</h1>
+          </div>
+          <div class="content">
+            <h2>Hello ${firstName || 'User'},</h2>
+            <p>A new note has been added to one of your documents.</p>
+            
+            <div class="note-box">
+              <div class="details">
+                <p><strong>Document Type:</strong> ${documentType}</p>
+                <p><strong>Transaction ID:</strong> ${transactionId}</p>
+                <p><strong>Note Author:</strong> ${noteAuthor}</p>
+                <p><strong>Note Type:</strong> <span style="color: ${currentType.color}; font-weight: bold;">${currentType.label}</span></p>
+                <p><strong>Priority:</strong> <span class="priority-badge">${currentPriority.label}</span></p>
+                <p><strong>Added:</strong> ${new Date().toLocaleString()}</p>
+              </div>
+
+              <div class="note-content">
+                <strong>Note:</strong><br>
+                ${noteText.replace(/\n/g, '<br>')}
+              </div>
+            </div>
+
+            ${isInternal ? `
+              <div class="internal-notice">
+                <strong>🔒 Internal Note:</strong> This note is marked as internal and may contain sensitive information.
+              </div>
+            ` : ''}
+
+            ${priority === 'urgent' || priority === 'high' ? `
+              <div style="background: #fef2f2; border: 1px solid #dc2626; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <strong>${currentPriority.icon} ${currentPriority.label}:</strong> This note requires your immediate attention.
+              </div>
+            ` : ''}
+
+            <p>You can log in to your account to view all notes and respond if necessary.</p>
+            
+            <div class="footer">
+              <p>This notification was sent because you are ${recipientRole === 'admin' ? 'an administrator' : 'the document owner'}.</p>
+              <p>&copy; 2025 Deco Platform. All rights reserved.</p>
+            </div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+    text: `
+      New Document Note - Deco Platform
+      
+      Hello ${firstName || 'User'},
+      
+      A new note has been added to one of your documents.
+      
+      Document Details:
+      - Document Type: ${documentType}
+      - Transaction ID: ${transactionId}
+      - Note Author: ${noteAuthor}
+      - Note Type: ${currentType.label}
+      - Priority: ${currentPriority.label}
+      - Added: ${new Date().toLocaleString()}
+      
+      Note:
+      ${noteText}
+      
+      ${isInternal ? 'This is an internal note and may contain sensitive information.' : ''}
+      ${priority === 'urgent' || priority === 'high' ? `${currentPriority.label}: This note requires your immediate attention.` : ''}
+      
+      You can log in to your account to view all notes and respond if necessary.
+      
+      This notification was sent because you are ${recipientRole === 'admin' ? 'an administrator' : 'the document owner'}.
+      
+      © 2025 Deco Platform. All rights reserved.
+    `
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Document note email sent:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('Error sending document note email:', error);
+    throw new Error('Failed to send note notification email');
+  }
+}
